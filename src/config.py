@@ -35,3 +35,25 @@ class Settings:
     # Валидация при старте
     if not DEBUG_MODE and AI_PROVIDER == "hf" and not HF_API_KEY:
         raise ValueError("HF_API_KEY не найден в .env! Получи на huggingface.co/setting/tokens")
+
+
+    # Настройки Groq API
+    GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+    GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+
+    # Валидация ключа при старте (если выбран Grog и выключен BEBUG)
+    if not DEBUG_MODE and AI_PROVIDER == "groq" and not GROQ_API_KEY:
+        raise ValueError(
+            "GROQ_API_KEY не найден в .env! Получи бесплатно на console.groq.com/keys"
+        )
+
+    # 🔹 Настройки Ollama (локальный API, без ключа)
+    OLLAMA_API_URL = os.getenv("OLLAMA_API_URL", "http://localhost:11434/v1/chat/completions")
+
+    # 🔓 Ollama не требует API-ключа, но можно добавить валидацию модели
+    if not DEBUG_MODE and AI_PROVIDER == "ollama":
+        # Проверяем, что модель задана (не пустая строка)
+        if not DEFAULT_MODEL:
+            raise ValueError(
+                "DEFAULT_MODEL не задан для Ollama! Пример: 'llama3.2:3b'"
+            )

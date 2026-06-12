@@ -58,5 +58,175 @@
     "role": "assistant",
     "content": "🧪 [MOCK-контекст]\nВижу 10 сообщений.\nПоследнее от тебя: Hello!",
     "timestamp": "2026-06-09T15:49:43.857738"
+  },
+  {
+    "role": "user",
+    "content": "Еще раз привет!",
+    "timestamp": "2026-06-10T22:16:15.985960"
+  },
+  {
+    "role": "assistant",
+    "content": "🧪 [MOCK-контекст]\nВижу 10 сообщений.\nПоследнее от тебя: Еще раз привет!",
+    "timestamp": "2026-06-10T22:16:16.489658"
+  },
+  {
+    "role": "user",
+    "content": "контрольное сообщение",
+    "timestamp": "2026-06-10T22:16:38.381622"
+  },
+  {
+    "role": "assistant",
+    "content": "🧪 [MOCK-контекст]\nВижу 10 сообщений.\nПоследнее от тебя: контрольное сообщение",
+    "timestamp": "2026-06-10T22:16:38.885095"
+  },
+  {
+    "role": "user",
+    "content": "выход",
+    "timestamp": "2026-06-10T22:17:08.445519"
+  },
+  {
+    "role": "assistant",
+    "content": "🧪 [MOCK-контекст]\nВижу 10 сообщений.\nПоследнее от тебя: выход",
+    "timestamp": "2026-06-10T22:17:08.950040"
+  },
+  {
+    "role": "user",
+    "content": "привет!",
+    "timestamp": "2026-06-12T08:45:19.365158"
+  },
+  {
+    "role": "assistant",
+    "content": "🧪 [MOCK-контекст]\nВижу 10 сообщений.\nПоследнее от тебя: привет!",
+    "timestamp": "2026-06-12T08:45:19.870874"
+  },
+  {
+    "role": "user",
+    "content": "как дела?",
+    "timestamp": "2026-06-12T08:45:33.129080"
+  },
+  {
+    "role": "assistant",
+    "content": "🧪 [MOCK-контекст]\nВижу 10 сообщений.\nПоследнее от тебя: как дела?",
+    "timestamp": "2026-06-12T08:45:33.639912"
+  },
+  {
+    "role": "user",
+    "content": "Привет",
+    "timestamp": "2026-06-12T08:48:31.044770"
+  },
+  {
+    "role": "assistant",
+    "content": "⚠️ Неожиданная ошибка: HTTPSConnectionPool(host='api-inference.huggingface.co', port=443): Max retries exceeded with url: /v1/chat/completions (Caused by NameResolutionError(\"HTTPSConnection(host='api-inference.huggingface.co', port=443): Failed to resolve 'api-inference.huggingface.co' ([Errno 11001] getaddrinfo failed)\"))",
+    "timestamp": "2026-06-12T08:48:31.309222"
+  },
+  {
+    "role": "user",
+    "content": "как зовут Пушкина?",
+    "timestamp": "2026-06-12T08:49:38.102351"
+  },
+  {
+    "role": "assistant",
+    "content": "⚠️ Неожиданная ошибка: HTTPSConnectionPool(host='api-inference.huggingface.co', port=443): Max retries exceeded with url: /v1/chat/completions (Caused by NameResolutionError(\"HTTPSConnection(host='api-inference.huggingface.co', port=443): Failed to resolve 'api-inference.huggingface.co' ([Errno 11001] getaddrinfo failed)\"))",
+    "timestamp": "2026-06-12T08:49:38.120729"
+  },
+  {
+    "role": "user",
+    "content": "привет! Как дела?",
+    "timestamp": "2026-06-12T18:30:30.731881"
+  },
+  {
+    "role": "assistant",
+    "content": "⚠️ Неизвестный провайдер: ollama",
+    "timestamp": "2026-06-12T18:30:30.738899"
+  },
+  {
+    "role": "user",
+    "content": "можешь ответить на вопросы?",
+    "timestamp": "2026-06-12T18:31:35.395713"
+  },
+  {
+    "role": "assistant",
+    "content": "⚠️ Неизвестный провайдер: ollama",
+    "timestamp": "2026-06-12T18:31:35.399843"
+  },
+  {
+    "role": "user",
+    "content": "привет!",
+    "timestamp": "2026-06-12T18:50:03.920233"
+  },
+  {
+    "role": "assistant",
+    "content": "⚠️ Ошибка: 404 Client Error: Not Found for url: http://localhost:11434/v1/chat/completions",
+    "timestamp": "2026-06-12T18:50:06.063470"
+  },
+  {
+    "role": "user",
+    "content": "Привет! Расскажи в 2-х словах, что такое машинное обучение",
+    "timestamp": "2026-06-12T21:17:56.214985"
+  },
+  {
+    "role": "assistant",
+    "content": "Машинное обучение - это processes.",
+    "timestamp": "2026-06-12T21:18:22.426352"
+  },
+  {
+    "role": "user",
+    "content": "Ты хороший рассказчик?",
+    "timestamp": "2026-06-12T21:26:31.093987"
+  },
+  {
+    "role": "assistant",
+    "content": "⏳ Таймаут: модель думает слишком долго.",
+    "timestamp": "2026-06-12T21:27:03.414123"
+  },
+  {
+    "role": "user",
+    "content": "Привет! Кто самый лучший русский поэт?",
+    "timestamp": "2026-06-12T21:42:21.623336"
+  },
+  {
+    "role": "assistant",
+    "content": "Привет! Это問анье difficile, но много人 считают, что Фёдор Гольденев - один из лучших русских лирических поэтовModern period.",
+    "timestamp": "2026-06-12T21:42:58.045326"
+  },
+  {
+    "role": "user",
+    "content": "ты знаком с творчеством А.С. Пушкина?",
+    "timestamp": "2026-06-12T21:44:02.315423"
+  },
+  {
+    "role": "assistant",
+    "content": "Да, я знаком myself с творчеством Пушкина! Это большой вклад вRussian литературе и культuruры XX века. Пушкин - один из greatest russikh поэтов и драматургов, его произведения широко изучаются и читаются по всему миру.",
+    "timestamp": "2026-06-12T21:44:29.969042"
+  },
+  {
+    "role": "user",
+    "content": "и я тоже так думаю, что Пушкин самый лучший поэт всех времен, он просто икона русской поэзии",
+    "timestamp": "2026-06-12T21:45:55.950963"
+  },
+  {
+    "role": "assistant",
+    "content": "Умножество agree! Пушкин - verdadeный master Russian поэзии и литературы He is considered one of the greatest poets of Russia and his works continue to inspire new generations of readers and writers. His poetry is known for its lyricism, depth, and emotional power, making him a beloved figure in Russian literary heritage",
+    "timestamp": "2026-06-12T21:46:29.996220"
+  },
+  {
+    "role": "user",
+    "content": "повтори тоже самое на русском языке",
+    "timestamp": "2026-06-12T21:47:19.070678"
+  },
+  {
+    "role": "assistant",
+    "content": "Да, повторю: Пушкин - икона русской лырики и литературы! Его произведения широко изучаются и читаются по всему миру. Это великий master русской поэзии и литературы, который продолжает вдохновлять новых поколений читателей и писателей. Его лирика известна своей lyrической тоном, глубиной и эмоциональной силой, что делает его belovedym символом русского литературного наследия",
+    "timestamp": "2026-06-12T21:48:04.197365"
+  },
+  {
+    "role": "user",
+    "content": "спасибо!",
+    "timestamp": "2026-06-12T21:48:37.642765"
+  },
+  {
+    "role": "assistant",
+    "content": "Вдыхайте русскую поэзию!",
+    "timestamp": "2026-06-12T21:49:11.600803"
   }
 ]

@@ -1,0 +1,35 @@
+name: CI Pipeline
+
+# Запускаем пайплайн при пуше и pull request в main
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest  # GitHub предоставляет свежую Ubuntu-машину
+
+    steps:
+      - name: 📥 Забираем код
+        uses: actions/checkout@v4
+
+      - name: 🐍 Устанавливаем Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: 'poetry'  # Кэшируем зависимости для ускорения
+
+      - name: 📦 Устанавливаем Poetry
+        run: pip install poetry
+
+      - name: 📚 Устанавливаем зависимости
+        # --no-root: не устанавливаем сам пакет, только зависимости
+        # --with dev: включаем pytest и другие dev-пакеты
+        run: poetry install --no-interaction --no-root --with dev
+
+      - name: 🧪 Запускаем тесты
+        # Тесты используют моки и DEBUG_MODE=true по умолчанию,
+        # поэтому файл .env в CI НЕ нужен и ключи не требуются!
+        run: poetry run pytest -v --tb=short
