@@ -44,6 +44,10 @@ class AIClient:
         # 2. Маршрутизация запроса
         if self.provider == "hf":
             return self._request_hf(messages)
+        elif self.provider == "groq":
+            return self._request_groq(messages)
+        elif self.provider == "ollama":
+            return self._request_ollama(messages)
         elif self.provider == "openrouter":
             return self._request_openrouter(messages)
         else:
@@ -83,6 +87,85 @@ class AIClient:
             logger.exception(f"⚠️ Неожиданная ошибка в _request_hf")  # exception() автоматически пишет трейсбек
             return f"⚠️ Неожиданная ошибка: {str(e)}"
 
-    def _request_openrouter(self, messages: list[dict]) -> str:
+    def _request_groq(self, messages):
+        """
+        Запрос к Groq API.
+        Формат идентичен OpenAI, поэтому payload и парсинг почти такие же.
+        """
+        headers = {
+            "Authorization": f"Bearer {Settings.GROQ_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "model": Settings.DEFAULT_MODEL,
+            "messages": messages,  # передаем весь контекст диалога
+            "max_tokens": 256,
+            "temperature": 0.7  # Groq хорошо реагирует на температуру
+        }
+        try:
+            response = requests.post(
+                Settings.GROQ_API_URL,
+                headers=headers,
+                json=payload,
+                timeout=15  # Groq обычно отвечает за < 1 сек
+            )
+            response.raise_for_status()
+            data = response.json()
+            return data["choices"][0]["message"]["content"]
+
+        except requests.exceptions.Timeout:
+            logger.warning("Таймаут: запроса к Groq (15 сек)")
+            return "Таймаут: Groq не ответил за 15 секунд."
+        except requests.exceptions.HTTPError as e:
+            logger.error(f"HTTP Ошибка Groq: {e.response.status_code}")
+            status = e.response.status_code
+            text = e.response.text[:150]
+            return f"Ошибка API Groq: {status} - {text}"
+        except Exception as e:
+            logger.exception("Неожиданная ошибка в _request_groq")
+            return f"Ошибка Groq: {str(e)}"
+
+    def _request_ollama(self, messages):
+        """
+        Запрос к локальному Ollama через OpenAI-совместимый API.
+        Не требует API-ключа, работает на localhost:11434
+        """
+        headers = {"Content-Type": "application/json"}  # 🔓 Без авторизации
+
+        payload = {
+            "model": Settings.DEFAULT_MODEL,
+            "messages": messages,
+            "stream": False,  # ❗ Важно: иначе придёт поток, а не JSON
+            "options": {
+                "temperature": 0.7,
+                "num_predict": 512  # Ограничиваем длину ответа
+            }
+        }
+
+        try:
+            response = requests.post(
+                Settings.OLLAMA_API_URL,  # http://localhost:11434/v1/chat/completions
+                headers=headers,
+                json=payload,
+                timeout=120  # Локальные модели могут «разогреваться»
+            )
+            response.raise_for_status()
+            data = response.json()
+            return data["choices"][0]["message"]["content"]
+
+        except requests.exceptions.ConnectionError:
+            logger.error("🔌 Ollama не отвечает на localhost:11434")
+            return "🔌 Ошибка: Ollama не запущен. Выполните 'ollama serve' или откройте приложение."
+        except requests.exceptions.Timeout:
+            logger.warning("⏳ Таймаут запроса к Ollama (120 сек)")
+            return "⏳ Таймаут: модель думает слишком долго."
+        except KeyError as e:
+            logger.error(f"🔑 Ошибка парсинга ответа Ollama: {e}")
+            return f"⚠️ Неожиданный формат ответа от Ollama: {e}"
+        except Exception as e:
+            logger.exception("⚠️ Неожиданная ошибка в _request_ollama")
+            return f"⚠️ Ошибка: {str(e)}"
+
+    def _request_openrouter(self, messages):
         """Заглушка для OpenRouter (исправлен отступ и сигнатура)"""
         return "🔧 OpenRouter пока не подключён. Используй AI_PROVIDER=hf или DEBUG_MODE=true"
