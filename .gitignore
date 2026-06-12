@@ -221,3 +221,6 @@ __marimo__/
 .arhive.py
 .arhive
 arhive
+pyproject.toml
+requirements.txt
+requirements-dev.txt
