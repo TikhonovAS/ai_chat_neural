@@ -1,4 +1,4 @@
-[tool.poetry]
+﻿[tool.poetry]
 name = "ai-chat-neural"
 version = "0.1.0"
 description = ""
@@ -18,11 +18,11 @@ build-backend = "poetry.core.masonry.api"
 
 [dependency-groups]
 dev = [
-    "pytest (>=9.0.3,<10.0.0)"]
+    "pytest (>=8.0,<10.0.0)"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "-v --tb=short"  # подробный вывод, короткие трейсбеки
+addopts = "-v --tb=short"  # РїРѕРґСЂРѕР±РЅС‹Р№ РІС‹РІРѕРґ, РєРѕСЂРѕС‚РєРёРµ С‚СЂРµР№СЃР±РµРєРё

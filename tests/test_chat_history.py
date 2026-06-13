@@ -1,77 +1,77 @@
-import pytest
+﻿import pytest
 import json
 from pathlib import Path
 from src.chat_history import ChatHistory
 
-# Фикстура: создаем временный файл для каждого теста и удаляет после
+# Р¤РёРєСЃС‚СѓСЂР°: СЃРѕР·РґР°РµРј РІСЂРµРјРµРЅРЅС‹Р№ С„Р°Р№Р» РґР»СЏ РєР°Р¶РґРѕРіРѕ С‚РµСЃС‚Р° Рё СѓРґР°Р»СЏРµС‚ РїРѕСЃР»Рµ
 @pytest.fixture
 def temp_history_file(tmp_path):
-    """Возвращает путь к временному файлу истории"""
+    """Р’РѕР·РІСЂР°С‰Р°РµС‚ РїСѓС‚СЊ Рє РІСЂРµРјРµРЅРЅРѕРјСѓ С„Р°Р№Р»Сѓ РёСЃС‚РѕСЂРёРё"""
     return tmp_path / "test_history.json"
 
 
 class TestChatHistorySaleLoad:
-    """Тесты сохранения и загрузки истории"""
+    """РўРµСЃС‚С‹ СЃРѕС…СЂР°РЅРµРЅРёСЏ Рё Р·Р°РіСЂСѓР·РєРё РёСЃС‚РѕСЂРёРё"""
 
     def test_add_message_saves_immediately(self, temp_history_file):
-        """Проверка после add_message файл сразу обновляется"""
+        """РџСЂРѕРІРµСЂРєР° РїРѕСЃР»Рµ add_message С„Р°Р№Р» СЃСЂР°Р·Сѓ РѕР±РЅРѕРІР»СЏРµС‚СЃСЏ"""
         history = ChatHistory(filepath=temp_history_file)
-        history.add_message("user", "Привет!")
+        history.add_message("user", "РџСЂРёРІРµС‚!")
 
-        # Читаем файл вручную
+        # Р§РёС‚Р°РµРј С„Р°Р№Р» РІСЂСѓС‡РЅСѓСЋ
         with open(temp_history_file, "r", encoding="utf-8") as f:
             data = json.load(f)
 
         assert len(data) == 1
         assert data[0]["role"] == "user"
-        assert data[0]["content"] == "Привет!"
-        assert "timestamp" in data[0]   # метка времени добавилась
+        assert data[0]["content"] == "РџСЂРёРІРµС‚!"
+        assert "timestamp" in data[0]   # РјРµС‚РєР° РІСЂРµРјРµРЅРё РґРѕР±Р°РІРёР»Р°СЃСЊ
 
     def test_load_nonexistent_file_starts_empty(self, temp_history_file):
-        """Проверка: если файла нет, история пуста (не падает)"""
-        # Файл еще не создан
+        """РџСЂРѕРІРµСЂРєР°: РµСЃР»Рё С„Р°Р№Р»Р° РЅРµС‚, РёСЃС‚РѕСЂРёСЏ РїСѓСЃС‚Р° (РЅРµ РїР°РґР°РµС‚)"""
+        # Р¤Р°Р№Р» РµС‰Рµ РЅРµ СЃРѕР·РґР°РЅ
         history = ChatHistory(filepath=temp_history_file)
         assert history.messages == []
 
     def test_load_corrupted_file_resets(self, temp_history_file):
-        """Проверка: битый JSON не ломает программу, а сбрасывает историю"""
-        # Создаем "битый" файл
+        """РџСЂРѕРІРµСЂРєР°: Р±РёС‚С‹Р№ JSON РЅРµ Р»РѕРјР°РµС‚ РїСЂРѕРіСЂР°РјРјСѓ, Р° СЃР±СЂР°СЃС‹РІР°РµС‚ РёСЃС‚РѕСЂРёСЋ"""
+        # РЎРѕР·РґР°РµРј "Р±РёС‚С‹Р№" С„Р°Р№Р»
         with open(temp_history_file, "w", encoding="utf-8") as f:
-            f.write("{ невалидный json }")
+            f.write("{ РЅРµРІР°Р»РёРґРЅС‹Р№ json }")
 
-        # Инициализация не должна упасть
+        # РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РЅРµ РґРѕР»Р¶РЅР° СѓРїР°СЃС‚СЊ
         history = ChatHistory(filepath=temp_history_file)
-        assert history.messages == []   # Начал с чистого листа
-        # И файл перезаписан корректно
+        assert history.messages == []   # РќР°С‡Р°Р» СЃ С‡РёСЃС‚РѕРіРѕ Р»РёСЃС‚Р°
+        # Р С„Р°Р№Р» РїРµСЂРµР·Р°РїРёСЃР°РЅ РєРѕСЂСЂРµРєС‚РЅРѕ
         assert temp_history_file.exists()
 
 
 class TestChatHistoryContext:
-    """Тесты работы с контекстом"""
+    """РўРµСЃС‚С‹ СЂР°Р±РѕС‚С‹ СЃ РєРѕРЅС‚РµРєСЃС‚РѕРј"""
 
     def test_get_context_limits_messages(self, temp_history_file):
-        """Проверка: get_context возвращает не больше N сообщений"""
+        """РџСЂРѕРІРµСЂРєР°: get_context РІРѕР·РІСЂР°С‰Р°РµС‚ РЅРµ Р±РѕР»СЊС€Рµ N СЃРѕРѕР±С‰РµРЅРёР№"""
         history = ChatHistory(filepath=temp_history_file)
 
-        # Добавляем 15 сообщений
+        # Р”РѕР±Р°РІР»СЏРµРј 15 СЃРѕРѕР±С‰РµРЅРёР№
         for i in range(15):
-            history.add_message("user", f"Сообщение {i}")
+            history.add_message("user", f"РЎРѕРѕР±С‰РµРЅРёРµ {i}")
 
-        # Запрашиваем контекст из 5 сообщений
+        # Р—Р°РїСЂР°С€РёРІР°РµРј РєРѕРЅС‚РµРєСЃС‚ РёР· 5 СЃРѕРѕР±С‰РµРЅРёР№
         context = history.get_context(max_messages=5)
 
         assert len(context) == 5
-        # Последние 5: индексы 10-14
-        assert context[0]["content"] == "Сообщение 10"
-        assert context[-1]["content"] == "Сообщение 14"
+        # РџРѕСЃР»РµРґРЅРёРµ 5: РёРЅРґРµРєСЃС‹ 10-14
+        assert context[0]["content"] == "РЎРѕРѕР±С‰РµРЅРёРµ 10"
+        assert context[-1]["content"] == "РЎРѕРѕР±С‰РµРЅРёРµ 14"
 
     def test_clear_removes_all(self, temp_history_file):
-        """Проверка: clear() полностью очищают историю"""
+        """РџСЂРѕРІРµСЂРєР°: clear() РїРѕР»РЅРѕСЃС‚СЊСЋ РѕС‡РёС‰Р°СЋС‚ РёСЃС‚РѕСЂРёСЋ"""
         history = ChatHistory(filepath=temp_history_file)
-        history.add_message("user", "Тест")
+        history.add_message("user", "РўРµСЃС‚")
         history.clear()
 
         assert history.messages == []
-        # И файл на диске тоже пуст
+        # Р С„Р°Р№Р» РЅР° РґРёСЃРєРµ С‚РѕР¶Рµ РїСѓСЃС‚
         with open(temp_history_file, "r", encoding="utf-8") as f:
             assert json.load(f) == []
