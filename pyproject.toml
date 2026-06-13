@@ -1,28 +1,27 @@
 ﻿[tool.poetry]
 name = "ai-chat-neural"
 version = "0.1.0"
-description = ""
-authors = ["Your Name <you@example.com>"]
+description = "Консольный ИИ-чат-бот с историей, логированием и тестами"
+authors = ["TikhonovAS <tihas987@gmail.com>"]
 readme = "README.md"
+license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.14"
 python-dotenv = "^1.2.2"
 requests = "^2.34.2"
-logging = "^0.4.9.6"
+# logging — это встроенный модуль, его не нужно указывать!
 
+[tool.poetry.group.dev.dependencies]
+pytest = ">=8.0,<10.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[dependency-groups]
-dev = [
-    "pytest (>=8.0,<10.0.0)"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "-v --tb=short"  # РїРѕРґСЂРѕР±РЅС‹Р№ РІС‹РІРѕРґ, РєРѕСЂРѕС‚РєРёРµ С‚СЂРµР№СЃР±РµРєРё
+addopts = "-v --tb=short"
