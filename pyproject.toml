@@ -1,4 +1,4 @@
-[tool.poetry]
+﻿[tool.poetry]
 name = "ai-chat-neural"
 version = "0.1.0"
 description = ""
@@ -25,4 +25,4 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "-v --tb=short"  # подробный вывод, короткие трейсбеки
+addopts = "-v --tb=short"  # РїРѕРґСЂРѕР±РЅС‹Р№ РІС‹РІРѕРґ, РєРѕСЂРѕС‚РєРёРµ С‚СЂРµР№СЃР±РµРєРё

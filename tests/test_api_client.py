@@ -1,4 +1,4 @@
-import pytest
+﻿import pytest
 from unittest.mock import patch, MagicMock
 
 import requests
@@ -8,47 +8,47 @@ from src.config import Settings
 
 
 class TestAIClientMockMode:
-    """Тесты режима заглушки (без реальных запросов)"""
+    """РўРµСЃС‚С‹ СЂРµР¶РёРјР° Р·Р°РіР»СѓС€РєРё (Р±РµР· СЂРµР°Р»СЊРЅС‹С… Р·Р°РїСЂРѕСЃРѕРІ)"""
 
     @pytest.fixture
     def mock_settings(self):
-        """Временно включаем DEBUG_MODE для тестов"""
+        """Р’СЂРµРјРµРЅРЅРѕ РІРєР»СЋС‡Р°РµРј DEBUG_MODE РґР»СЏ С‚РµСЃС‚РѕРІ"""
         original = Settings.DEBUG_MODE
         Settings.DEBUG_MODE = True
         yield
-        Settings.DEBUG_MODE = original  # Возвращаем как было
+        Settings.DEBUG_MODE = original  # Р’РѕР·РІСЂР°С‰Р°РµРј РєР°Рє Р±С‹Р»Рѕ
 
     def test_get_response_returns_mock_in_debug(self, mock_settings):
-        """Проверка: в DEBUG_MODE возвращается заглушка, не стучится в сеть"""
+        """РџСЂРѕРІРµСЂРєР°: РІ DEBUG_MODE РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ Р·Р°РіР»СѓС€РєР°, РЅРµ СЃС‚СѓС‡РёС‚СЃСЏ РІ СЃРµС‚СЊ"""
         client = AIClient()
-        messages = [{"role": "user", "content": "Тест"}]
+        messages = [{"role": "user", "content": "РўРµСЃС‚"}]
 
         answer = client.get_response(messages)
 
         assert "[MOCK]" in answer
-        assert "Тест" in answer  # Видит наше сообщение
+        assert "РўРµСЃС‚" in answer  # Р’РёРґРёС‚ РЅР°С€Рµ СЃРѕРѕР±С‰РµРЅРёРµ
 
     def test_mock_context_awareness(self, mock_settings):
-        """Проверка: заглушка «видит» количество сообщений в истории"""
+        """РџСЂРѕРІРµСЂРєР°: Р·Р°РіР»СѓС€РєР° В«РІРёРґРёС‚В» РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРѕРѕР±С‰РµРЅРёР№ РІ РёСЃС‚РѕСЂРёРё"""
         client = AIClient()
         messages = [
-            {"role": "user", "content": "Привет"},
+            {"role": "user", "content": "РџСЂРёРІРµС‚"},
             {"role": "assistant", "content": "Hi"},
-            {"role": "user", "content": "Как дела?"}
+            {"role": "user", "content": "РљР°Рє РґРµР»Р°?"}
         ]
 
         answer = client.get_response(messages)
 
-        assert "3 сообщений" in answer or "Вижу 3" in answer
+        assert "3 СЃРѕРѕР±С‰РµРЅРёР№" in answer or "Р’РёР¶Сѓ 3" in answer
 
 
 class TestAIClientErrorHandling:
-    """Тесты обработки ошибок (с моками внешних запросов)"""
+    """РўРµСЃС‚С‹ РѕР±СЂР°Р±РѕС‚РєРё РѕС€РёР±РѕРє (СЃ РјРѕРєР°РјРё РІРЅРµС€РЅРёС… Р·Р°РїСЂРѕСЃРѕРІ)"""
 
     @patch("src.api_client.requests.post")
     def test_timeout_returns_friendly_message(self, mock_post):
-        """Проверка: при таймауте пользователь видит понятное сообщение"""
-        # ✅ Имитируем ИМЕННО сетевой таймаут, а не общую ошибку
+        """РџСЂРѕРІРµСЂРєР°: РїСЂРё С‚Р°Р№РјР°СѓС‚Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РІРёРґРёС‚ РїРѕРЅСЏС‚РЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ"""
+        # вњ… РРјРёС‚РёСЂСѓРµРј РРњР•РќРќРћ СЃРµС‚РµРІРѕР№ С‚Р°Р№РјР°СѓС‚, Р° РЅРµ РѕР±С‰СѓСЋ РѕС€РёР±РєСѓ
         mock_post.side_effect = requests.exceptions.Timeout("Connection timed out")
 
         with patch.object(Settings, "DEBUG_MODE", False):
@@ -56,5 +56,5 @@ class TestAIClientErrorHandling:
                 client = AIClient()
                 answer = client._request_hf([])
 
-        # ✅ Проверяем точный текст, который возвращает блок except requests.exceptions.Timeout:
-        assert "Таймаут" in answer and "20 секунд" in answer
+        # вњ… РџСЂРѕРІРµСЂСЏРµРј С‚РѕС‡РЅС‹Р№ С‚РµРєСЃС‚, РєРѕС‚РѕСЂС‹Р№ РІРѕР·РІСЂР°С‰Р°РµС‚ Р±Р»РѕРє except requests.exceptions.Timeout:
+        assert "РўР°Р№РјР°СѓС‚" in answer and "20 СЃРµРєСѓРЅРґ" in answer

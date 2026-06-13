@@ -1,23 +1,23 @@
-import requests
+﻿import requests
 import time
 from src.config import Settings
 
 # -------------------------------------------------
-# Добавлено после создания модуля logger.py 🔻
+# Р”РѕР±Р°РІР»РµРЅРѕ РїРѕСЃР»Рµ СЃРѕР·РґР°РЅРёСЏ РјРѕРґСѓР»СЏ logger.py рџ”»
 
 import logging
 
-# Получаем логгер с именем "src.api.client"
+# РџРѕР»СѓС‡Р°РµРј Р»РѕРіРіРµСЂ СЃ РёРјРµРЅРµРј "src.api.client"
 logger = logging.getLogger(__name__)
 
 
-# Добавлено после создания модуля logger.py 🔺
+# Р”РѕР±Р°РІР»РµРЅРѕ РїРѕСЃР»Рµ СЃРѕР·РґР°РЅРёСЏ РјРѕРґСѓР»СЏ logger.py рџ”є
 # --------------------------------------------------
 
 class AIClient:
     """
-    Универсальный ИИ-клиент. Поддерживает: заглушку, Hugging Face, OpenRouter.
-    Автоматически выбирает провайдера по Settings.AI_PROVIDER.
+    РЈРЅРёРІРµСЂСЃР°Р»СЊРЅС‹Р№ РР-РєР»РёРµРЅС‚. РџРѕРґРґРµСЂР¶РёРІР°РµС‚: Р·Р°РіР»СѓС€РєСѓ, Hugging Face, OpenRouter.
+    РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё РІС‹Р±РёСЂР°РµС‚ РїСЂРѕРІР°Р№РґРµСЂР° РїРѕ Settings.AI_PROVIDER.
     """
 
     def __init__(self):
@@ -26,22 +26,22 @@ class AIClient:
 
     def get_response(self, messages: list[dict]) -> str:
         """
-        Отправляет КОНТЕКСТ диалога в нейросеть и возвращает ответ.
-        :param messages: список [{"role": "user/assistant", "content": "..."}]
+        РћС‚РїСЂР°РІР»СЏРµС‚ РљРћРќРўР•РљРЎРў РґРёР°Р»РѕРіР° РІ РЅРµР№СЂРѕСЃРµС‚СЊ Рё РІРѕР·РІСЂР°С‰Р°РµС‚ РѕС‚РІРµС‚.
+        :param messages: СЃРїРёСЃРѕРє [{"role": "user/assistant", "content": "..."}]
         """
-        # 1. Заглушка (для разработки без траты лимитов)
+        # 1. Р—Р°РіР»СѓС€РєР° (РґР»СЏ СЂР°Р·СЂР°Р±РѕС‚РєРё Р±РµР· С‚СЂР°С‚С‹ Р»РёРјРёС‚РѕРІ)
         if self.debug:
             time.sleep(0.5)
-            # Имитируем, что ИИ анализирует историю
+            # РРјРёС‚РёСЂСѓРµРј, С‡С‚Рѕ РР Р°РЅР°Р»РёР·РёСЂСѓРµС‚ РёСЃС‚РѕСЂРёСЋ
             user_msgs = [m for m in messages if m["role"] == "user"]
             if not user_msgs:
-                return "🧪 [MOCK] История пуста."
+                return "рџ§Є [MOCK] РСЃС‚РѕСЂРёСЏ РїСѓСЃС‚Р°."
 
             if len(messages) > 2:
-                return f"🧪 [MOCK-контекст]\nВижу {len(messages)} сообщений.\nПоследнее от тебя: {user_msgs[-1]['content']}"
-            return f"🧪 [MOCK] Получено: '{user_msgs[-1]['content']}'"
+                return f"рџ§Є [MOCK-РєРѕРЅС‚РµРєСЃС‚]\nР’РёР¶Сѓ {len(messages)} СЃРѕРѕР±С‰РµРЅРёР№.\nРџРѕСЃР»РµРґРЅРµРµ РѕС‚ С‚РµР±СЏ: {user_msgs[-1]['content']}"
+            return f"рџ§Є [MOCK] РџРѕР»СѓС‡РµРЅРѕ: '{user_msgs[-1]['content']}'"
 
-        # 2. Маршрутизация запроса
+        # 2. РњР°СЂС€СЂСѓС‚РёР·Р°С†РёСЏ Р·Р°РїСЂРѕСЃР°
         if self.provider == "hf":
             return self._request_hf(messages)
         elif self.provider == "groq":
@@ -51,10 +51,10 @@ class AIClient:
         elif self.provider == "openrouter":
             return self._request_openrouter(messages)
         else:
-            return f"⚠️ Неизвестный провайдер: {self.provider}"
+            return f"вљ пёЏ РќРµРёР·РІРµСЃС‚РЅС‹Р№ РїСЂРѕРІР°Р№РґРµСЂ: {self.provider}"
 
     def _request_hf(self, messages: list[dict]) -> str:
-        """Запрос к Hugging Face Inference API с полной историей"""
+        """Р—Р°РїСЂРѕСЃ Рє Hugging Face Inference API СЃ РїРѕР»РЅРѕР№ РёСЃС‚РѕСЂРёРµР№"""
         headers = {
             "Authorization": f"Bearer {Settings.HF_API_KEY}",
             "Content-Type": "application/json",
@@ -62,7 +62,7 @@ class AIClient:
 
         payload = {
             "model": Settings.DEFAULT_MODEL,
-            "messages": messages,  # ✅ Передаём ВЕСЬ список, а не одно сообщение
+            "messages": messages,  # вњ… РџРµСЂРµРґР°С‘Рј Р’Р•РЎР¬ СЃРїРёСЃРѕРє, Р° РЅРµ РѕРґРЅРѕ СЃРѕРѕР±С‰РµРЅРёРµ
             "max_tokens": 256
         }
 
@@ -78,19 +78,19 @@ class AIClient:
             return data["choices"][0]["message"]["content"]
 
         except requests.exceptions.Timeout:
-            logger.warning("⏳ Таймаут запроса к API (20 сек)")
-            return "⏳ Таймаут: нейросеть не ответила за 20 секунд."
+            logger.warning("вЏі РўР°Р№РјР°СѓС‚ Р·Р°РїСЂРѕСЃР° Рє API (20 СЃРµРє)")
+            return "вЏі РўР°Р№РјР°СѓС‚: РЅРµР№СЂРѕСЃРµС‚СЊ РЅРµ РѕС‚РІРµС‚РёР»Р° Р·Р° 20 СЃРµРєСѓРЅРґ."
         except requests.exceptions.HTTPError as e:
-            logger.error(f"🚨 HTTP Ошибка API: {e.response.status_code} | {e.response.text[:100]}")
-            return f"🚨 Ошибка API: {e.response.status_code} - {e.response.text[:100]}"
+            logger.error(f"рџљЁ HTTP РћС€РёР±РєР° API: {e.response.status_code} | {e.response.text[:100]}")
+            return f"рџљЁ РћС€РёР±РєР° API: {e.response.status_code} - {e.response.text[:100]}"
         except Exception as e:
-            logger.exception(f"⚠️ Неожиданная ошибка в _request_hf")  # exception() автоматически пишет трейсбек
-            return f"⚠️ Неожиданная ошибка: {str(e)}"
+            logger.exception(f"вљ пёЏ РќРµРѕР¶РёРґР°РЅРЅР°СЏ РѕС€РёР±РєР° РІ _request_hf")  # exception() Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РїРёС€РµС‚ С‚СЂРµР№СЃР±РµРє
+            return f"вљ пёЏ РќРµРѕР¶РёРґР°РЅРЅР°СЏ РѕС€РёР±РєР°: {str(e)}"
 
     def _request_groq(self, messages):
         """
-        Запрос к Groq API.
-        Формат идентичен OpenAI, поэтому payload и парсинг почти такие же.
+        Р—Р°РїСЂРѕСЃ Рє Groq API.
+        Р¤РѕСЂРјР°С‚ РёРґРµРЅС‚РёС‡РµРЅ OpenAI, РїРѕСЌС‚РѕРјСѓ payload Рё РїР°СЂСЃРёРЅРі РїРѕС‡С‚Рё С‚Р°РєРёРµ Р¶Рµ.
         """
         headers = {
             "Authorization": f"Bearer {Settings.GROQ_API_KEY}",
@@ -98,47 +98,47 @@ class AIClient:
         }
         payload = {
             "model": Settings.DEFAULT_MODEL,
-            "messages": messages,  # передаем весь контекст диалога
+            "messages": messages,  # РїРµСЂРµРґР°РµРј РІРµСЃСЊ РєРѕРЅС‚РµРєСЃС‚ РґРёР°Р»РѕРіР°
             "max_tokens": 256,
-            "temperature": 0.7  # Groq хорошо реагирует на температуру
+            "temperature": 0.7  # Groq С…РѕСЂРѕС€Рѕ СЂРµР°РіРёСЂСѓРµС‚ РЅР° С‚РµРјРїРµСЂР°С‚СѓСЂСѓ
         }
         try:
             response = requests.post(
                 Settings.GROQ_API_URL,
                 headers=headers,
                 json=payload,
-                timeout=15  # Groq обычно отвечает за < 1 сек
+                timeout=15  # Groq РѕР±С‹С‡РЅРѕ РѕС‚РІРµС‡Р°РµС‚ Р·Р° < 1 СЃРµРє
             )
             response.raise_for_status()
             data = response.json()
             return data["choices"][0]["message"]["content"]
 
         except requests.exceptions.Timeout:
-            logger.warning("Таймаут: запроса к Groq (15 сек)")
-            return "Таймаут: Groq не ответил за 15 секунд."
+            logger.warning("РўР°Р№РјР°СѓС‚: Р·Р°РїСЂРѕСЃР° Рє Groq (15 СЃРµРє)")
+            return "РўР°Р№РјР°СѓС‚: Groq РЅРµ РѕС‚РІРµС‚РёР» Р·Р° 15 СЃРµРєСѓРЅРґ."
         except requests.exceptions.HTTPError as e:
-            logger.error(f"HTTP Ошибка Groq: {e.response.status_code}")
+            logger.error(f"HTTP РћС€РёР±РєР° Groq: {e.response.status_code}")
             status = e.response.status_code
             text = e.response.text[:150]
-            return f"Ошибка API Groq: {status} - {text}"
+            return f"РћС€РёР±РєР° API Groq: {status} - {text}"
         except Exception as e:
-            logger.exception("Неожиданная ошибка в _request_groq")
-            return f"Ошибка Groq: {str(e)}"
+            logger.exception("РќРµРѕР¶РёРґР°РЅРЅР°СЏ РѕС€РёР±РєР° РІ _request_groq")
+            return f"РћС€РёР±РєР° Groq: {str(e)}"
 
     def _request_ollama(self, messages):
         """
-        Запрос к локальному Ollama через OpenAI-совместимый API.
-        Не требует API-ключа, работает на localhost:11434
+        Р—Р°РїСЂРѕСЃ Рє Р»РѕРєР°Р»СЊРЅРѕРјСѓ Ollama С‡РµСЂРµР· OpenAI-СЃРѕРІРјРµСЃС‚РёРјС‹Р№ API.
+        РќРµ С‚СЂРµР±СѓРµС‚ API-РєР»СЋС‡Р°, СЂР°Р±РѕС‚Р°РµС‚ РЅР° localhost:11434
         """
-        headers = {"Content-Type": "application/json"}  # 🔓 Без авторизации
+        headers = {"Content-Type": "application/json"}  # рџ”“ Р‘РµР· Р°РІС‚РѕСЂРёР·Р°С†РёРё
 
         payload = {
             "model": Settings.DEFAULT_MODEL,
             "messages": messages,
-            "stream": False,  # ❗ Важно: иначе придёт поток, а не JSON
+            "stream": False,  # вќ— Р’Р°Р¶РЅРѕ: РёРЅР°С‡Рµ РїСЂРёРґС‘С‚ РїРѕС‚РѕРє, Р° РЅРµ JSON
             "options": {
                 "temperature": 0.7,
-                "num_predict": 512  # Ограничиваем длину ответа
+                "num_predict": 512  # РћРіСЂР°РЅРёС‡РёРІР°РµРј РґР»РёРЅСѓ РѕС‚РІРµС‚Р°
             }
         }
 
@@ -147,25 +147,25 @@ class AIClient:
                 Settings.OLLAMA_API_URL,  # http://localhost:11434/v1/chat/completions
                 headers=headers,
                 json=payload,
-                timeout=120  # Локальные модели могут «разогреваться»
+                timeout=120  # Р›РѕРєР°Р»СЊРЅС‹Рµ РјРѕРґРµР»Рё РјРѕРіСѓС‚ В«СЂР°Р·РѕРіСЂРµРІР°С‚СЊСЃСЏВ»
             )
             response.raise_for_status()
             data = response.json()
             return data["choices"][0]["message"]["content"]
 
         except requests.exceptions.ConnectionError:
-            logger.error("🔌 Ollama не отвечает на localhost:11434")
-            return "🔌 Ошибка: Ollama не запущен. Выполните 'ollama serve' или откройте приложение."
+            logger.error("рџ”Њ Ollama РЅРµ РѕС‚РІРµС‡Р°РµС‚ РЅР° localhost:11434")
+            return "рџ”Њ РћС€РёР±РєР°: Ollama РЅРµ Р·Р°РїСѓС‰РµРЅ. Р’С‹РїРѕР»РЅРёС‚Рµ 'ollama serve' РёР»Рё РѕС‚РєСЂРѕР№С‚Рµ РїСЂРёР»РѕР¶РµРЅРёРµ."
         except requests.exceptions.Timeout:
-            logger.warning("⏳ Таймаут запроса к Ollama (120 сек)")
-            return "⏳ Таймаут: модель думает слишком долго."
+            logger.warning("вЏі РўР°Р№РјР°СѓС‚ Р·Р°РїСЂРѕСЃР° Рє Ollama (120 СЃРµРє)")
+            return "вЏі РўР°Р№РјР°СѓС‚: РјРѕРґРµР»СЊ РґСѓРјР°РµС‚ СЃР»РёС€РєРѕРј РґРѕР»РіРѕ."
         except KeyError as e:
-            logger.error(f"🔑 Ошибка парсинга ответа Ollama: {e}")
-            return f"⚠️ Неожиданный формат ответа от Ollama: {e}"
+            logger.error(f"рџ”‘ РћС€РёР±РєР° РїР°СЂСЃРёРЅРіР° РѕС‚РІРµС‚Р° Ollama: {e}")
+            return f"вљ пёЏ РќРµРѕР¶РёРґР°РЅРЅС‹Р№ С„РѕСЂРјР°С‚ РѕС‚РІРµС‚Р° РѕС‚ Ollama: {e}"
         except Exception as e:
-            logger.exception("⚠️ Неожиданная ошибка в _request_ollama")
-            return f"⚠️ Ошибка: {str(e)}"
+            logger.exception("вљ пёЏ РќРµРѕР¶РёРґР°РЅРЅР°СЏ РѕС€РёР±РєР° РІ _request_ollama")
+            return f"вљ пёЏ РћС€РёР±РєР°: {str(e)}"
 
     def _request_openrouter(self, messages):
-        """Заглушка для OpenRouter (исправлен отступ и сигнатура)"""
-        return "🔧 OpenRouter пока не подключён. Используй AI_PROVIDER=hf или DEBUG_MODE=true"
+        """Р—Р°РіР»СѓС€РєР° РґР»СЏ OpenRouter (РёСЃРїСЂР°РІР»РµРЅ РѕС‚СЃС‚СѓРї Рё СЃРёРіРЅР°С‚СѓСЂР°)"""
+        return "рџ”§ OpenRouter РїРѕРєР° РЅРµ РїРѕРґРєР»СЋС‡С‘РЅ. РСЃРїРѕР»СЊР·СѓР№ AI_PROVIDER=hf РёР»Рё DEBUG_MODE=true"
