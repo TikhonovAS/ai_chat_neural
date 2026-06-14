@@ -1,7 +1,7 @@
 ﻿[tool.poetry]
 name = "ai-chat-neural"
 version = "0.1.0"
-description = "Консольный ИИ-чат-бот с историей, логированием и тестами"
+description = "Console AI chatbot with history and tests"
 authors = ["TikhonovAS <tihas987@gmail.com>"]
 readme = "README.md"
 license = "MIT"
@@ -10,7 +10,6 @@ license = "MIT"
 python = "^3.14"
 python-dotenv = "^1.2.2"
 requests = "^2.34.2"
-# logging — это встроенный модуль, его не нужно указывать!
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8.0,<10.0"
