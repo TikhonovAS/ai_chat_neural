@@ -1,26 +1,19 @@
-﻿[tool.poetry]
+[tool.poetry]
 name = "ai-chat-neural"
 version = "0.1.0"
-description = "Console AI chatbot with history and tests"
+description = "AI Chat Bot with Clean Architecture"
 authors = ["TikhonovAS <tihas987@gmail.com>"]
 readme = "README.md"
-license = "MIT"
+packages = [{include = "*", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.14"
-python-dotenv = "^1.2.2"
-requests = "^2.34.2"
+python-dotenv = "^1.0.0"
+requests = "^2.31.0"
 
 [tool.poetry.group.dev.dependencies]
-pytest = ">=8.0,<10.0"
+pytest = "^8.0.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-python_classes = ["Test*"]
-python_functions = ["test_*"]
-addopts = "-v --tb=short"

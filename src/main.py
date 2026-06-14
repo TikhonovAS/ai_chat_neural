@@ -1,25 +1,21 @@
 ﻿import logging
+from src.config import Settings
 from src.logger import setup_logging
-from src.api_client import AIClient
 from src.chat_history import ChatHistory
+from src.api_client import AIClient
 from src.session import ChatSession
 
 
-def main():
-    """РўРѕС‡РєР° РІС…РѕРґР°. РўРѕР»СЊРєРѕ РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ Рё Р·Р°РїСѓСЃРє."""
-    setup_logging()
-    logger = logging.getLogger(__name__)
-    logger.info("рџ”§ РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РєРѕРјРїРѕРЅРµРЅС‚РѕРІ...")
+def main() -> None:
+    """Точка входа: инициализация системы и запуск сессии."""
+    setup_logging()  # ✅ Делегируем настройку отдельному модулю
 
-    # РЎР±РѕСЂРєР° Р·Р°РІРёСЃРёРјРѕСЃС‚РµР№
-    client = AIClient()
+    logging.info("🔧 Инициализация компонентов...")
+
     history = ChatHistory()
+    client = AIClient()
+    session = ChatSession(client, history)
 
-    # Р—Р°РїСѓСЃРє СЃРµСЃСЃРёРё
-    session = ChatSession(client=client, history=history)
-    logger.info(f"рџ“‚ Р—Р°РіСЂСѓР¶РµРЅРѕ {len(history.messages)} СЃРѕРѕР±С‰РµРЅРёР№ РёР· РёСЃС‚РѕСЂРёРё")
-
-    # РџРµСЂРµРґР°С‘Рј СѓРїСЂР°РІР»РµРЅРёРµ СЃРµСЃСЃРёРё
     session.run()
 
 
