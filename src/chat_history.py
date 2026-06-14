@@ -1,61 +1,52 @@
 ﻿import json
+import logging
 from pathlib import Path
-from datetime import datetime
+from src.config import Settings
+
+logger = logging.getLogger(__name__)
 
 
 class ChatHistory:
-    """
-    РљР»Р°СЃСЃ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РґРёР°Р»РѕРіР°.
-    РџРѕРґРґРµСЂР¶РёРІР°РµС‚: РґРѕР±Р°РІР»РµРЅРёРµ СЃРѕРѕР±С‰РµРЅРёР№, СЃРѕС…СЂР°РЅРµРЅРёРµ РІ JSON, Р·Р°РіСЂСѓР·РєСѓ
-    """
+    """Управление историей диалога: сохранение, загрузка, ограничение контекста."""
 
-    def __init__(self, filepath="history.json"):
-        self.filepath = Path(filepath)
-        self.messages = []
+    def __init__(self, file_path: str = Settings.HISTORY_FILE, max_messages: int = 10):
+        self.file_path = Path(file_path)
+        self.max_messages = max_messages
+        self.messages: list[dict] = []
         self._load()
 
-    def add_message(self, role, content):
-        """Р”РѕР±Р°РІР»СЏРµС‚ СЃРѕРѕР±С‰РµРЅРёРµ РІ РёСЃС‚РѕСЂРёСЋ Рё СЃСЂР°Р·Сѓ СЃРѕС…СЂР°РЅРёСЏРµС‚ РЅР° РґРёСЃРє"""
-        message = {
-            "role": role,
-            "content": content,
-            "timestamp": datetime.now().isoformat()
-        }
-        self.messages.append(message)
-        self._save()
+    def _load(self) -> None:
+        """Загружает историю из файла. При ошибке начинает с пустого списка."""
+        try:
+            if self.file_path.exists():
+                with open(self.file_path, "r", encoding="utf-8") as f:
+                    self.messages = json.load(f)
+                logger.info(f"📂 Загружено {len(self.messages)} сообщений из истории")
+        except (json.JSONDecodeError, IOError) as e:
+            logger.warning(f"⚠️ История повреждена или недоступна: {e}. Начинаем заново.")
+            self.messages = []
 
-    def get_context(self, max_messages=10):
-        """Р’РѕР·РІСЂР°С‰Р°РµС‚ РїРѕСЃР»РµРґРЅРёРµ N СЃРѕРѕР±С‰РµРЅРёР№ РґР»СЏ РѕС‚РїСЂР°РІРєРё РІ API"""
-        return self.messages[-max_messages:]
+    def save(self) -> None:
+        """Сохраняет историю в JSON."""
+        try:
+            self.file_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(self.file_path, "w", encoding="utf-8") as f:
+                json.dump(self.messages, f, ensure_ascii=False, indent=2)
+        except IOError as e:
+            logger.error(f"❌ Ошибка сохранения истории: {e}")
 
-    def clear(self):
-        """РћС‡РёС‰Р°РµС‚ РёСЃС‚РѕСЂРёСЋ"""
-        self.messages = []
-        self._save()
+    def add_message(self, role: str, content: str) -> None:
+        """Добавляет сообщение и сразу сохраняет."""
+        self.messages.append({"role": role, "content": content})
+        self.save()
 
-    def _save(self):
-        """Р’РЅСѓС‚СЂРµРЅРЅРёР№ РјРµС‚РѕРґ: СЃРѕС…СЂР°РЅСЏРµС‚ РёСЃС‚РѕСЂРёСЋ РІ JSON-С„Р°Р№Р»"""
-        with open(self.filepath, "w", encoding="utf-8") as f:
-            json.dump(self.messages, f, ensure_ascii=False, indent=2)
+    def get_context(self) -> list[dict]:
+        """Возвращает последние N сообщений для контекста ИИ."""
+        return self.messages[-self.max_messages:]
 
-    def _load(self):
-        """Р’РЅСѓС‚СЂРµРЅРЅРёР№ РјРµС‚РѕРґ: Р·Р°РіСЂСѓР¶Р°РµС‚ РёСЃС‚РѕСЂРёСЋ РёР· С„Р°Р№Р»Р°, РµСЃР»Рё РѕРЅ РµСЃС‚СЊ"""
-        if self.filepath.exists():
-            try:
-                with open(self.filepath, "r", encoding="utf-8") as f:
-                    content = f.read().strip()
-                    if not content:  # Р¤Р°Р№Р» РїСѓСЃС‚РѕР№
-                        self.messages = []
-                        return
-                    self.messages = json.loads(content)
-
-            except json.JSONDecodeError:
-                # Р•СЃР»Рё С„Р°Р№Р» РїРѕРІСЂРµР¶РґРµРЅ РёР»Рё РїСѓСЃС‚РѕР№, РЅР°С‡РёРЅР°РµРј СЃ РЅСѓР»СЏ
-                print("history.json РїРѕРІСЂРµР¶РґРµРЅ. РќР°С‡РёРЅР°СЋ РЅРѕРІСѓСЋ РёСЃС‚РѕСЂРёСЋ.")
-                self.messages = []
-                self._save()  # РїРµСЂРµР·Р°РїРёСЃС‹РІР°РµРј С„Р°Р№Р» РєРѕСЂСЂРµРєС‚РЅС‹Рј РїСѓСЃС‚С‹Рј СЃРїРёСЃРєРѕРј
-
-            except Exception as e:
-                # Р›СЋР±РѕР№ РґСЂСѓРіРѕР№ С„Р°СЂСЃ-РјР°Р¶РѕСЂ (РїСЂР°РІР° РґРѕСЃС‚СѓРїР°, СЃР±РѕР№ РґРёСЃРєР°)
-                print(f"РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё РёСЃС‚РѕСЂРёРё: {e}. РќР°С‡РёРЅР°СЋ СЃ РЅСѓР»СЏ.")
-                self.messages = []
+    def clear(self) -> None:
+        """Очищает историю и файл."""
+        self.messages.clear()
+        if self.file_path.exists():
+            self.file_path.unlink()
+        logger.info("🗑 История очищена")
