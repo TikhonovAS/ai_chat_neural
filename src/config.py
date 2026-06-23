@@ -13,3 +13,4 @@ class Settings:
     # Пути к файлам
     HISTORY_FILE: str = os.getenv("HISTORY_FILE", "history.json")
     LOG_FILE: str = os.getenv("LOG_FILE", "logs/bot.log")
+    API_KEY: str = os.getenv("API_KEY", "dev-key-123")
